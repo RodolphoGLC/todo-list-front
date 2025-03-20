@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="circle"></div>
+    </header>
+    <main>
+      <section class="info-box">
+        <div class="rectangle">
+            <h2 id="readyCount">0</h2>
+            <p>Ready</p>
+        </div>
+        <div class="rectangle">
+            <h2 id="doingCount">0</h2>
+            <p>Doing</p>
+        </div>
+        <div class="rectangle">
+            <h2 id="doneCount">0</h2>
+            <p>Done</p>
+        </div>
+    </section>
+      <section class="task-complement">
+        <button class="button-task">Filter Tasks</button>
+        <button class="button-task" id="open-register" onclick='showModal("register")'>
+          Create Task
+        </button>
+      </section>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="task-table">
+            <!-- Will be populated with request data -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <footer>
+      <p class="footer-text">Task Manager - 2025</p>
+    </footer>
+
+    <div id="task-register-modal" class="modal">
+      <div class="modal-content">
+        <button class="close-button" id="close-register" onclick='closeModal("register")'>
+          &times;
+        </button>
+        <h2>Create New Task</h2>
+        <form id="task-form">
+          <label for="task-name">Task Name:</label>
+          <input type="text" id="input-name" name="task-name" required />
+
+          <label for="task-description">Description:</label>
+          <input id="input-description" name="task-description" required />
+
+          <button type="submit" id="create-button">Create Task</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="task-edit-modal" class="modal">
+      <div class="modal-content">
+        <button class="close-button" id="close-register" onclick='closeModal("edit")'>
+          &times;
+        </button>
+        <h2>Edit Task</h2>
+        <form id="task-form">
+          <label for="task-id">Task Id:</label>
+          <input type="text" id="input-edit-id" name="task-id" disabled required />
+
+          <label for="task-name">Task Name:</label>
+          <input type="text" id="input-edit-name" name="task-name" disabled required />
+
+          <label for="task-description">Description:</label>
+          <input id="input-edit-description" name="task-description" disabled required />
+
+          <label for="task-description">Status:</label>
+          <input id="input-edit-status" name="task-edit-status" required />
+
+          <button type="submit" id="create-button">Edit Task</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

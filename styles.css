@@ -1,0 +1,195 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background-color: #f4f4f4;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header,
+footer {
+  background-color: #333;
+  height: 48px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  color: white;
+}
+
+.footer-text {
+  margin: 15px 0px 15px 10px;
+}
+
+.circle {
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border-radius: 50%;
+  margin: 4px 0px 4px 10px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px;
+  height: calc(100% - 48px - 48px - 32px);
+}
+
+.info-box {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 16px 0;
+  height: 120px;
+}
+
+.rectangle {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 200px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.rectangle h2 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.rectangle p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.task-complement {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0;
+  height: 55px;
+  width: 100%;
+}
+
+.button-task {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.button-task:hover {
+  background-color: #0056b3;
+}
+
+.table-container {
+  max-height: calc(100% - 120px - 55px - 32px - 32px);;
+  overflow-y: auto;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+table {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+table,
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+th {
+  background-color: #333;
+  color: white;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal {
+  display: none; 
+  position: fixed; 
+  width: 100vw; 
+  height: 100vh;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  
+  background-color: rgba(0, 0, 0, 0.5); 
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative; 
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px; 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); 
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.close-button:hover {
+  color: red;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #45a049;
+}
