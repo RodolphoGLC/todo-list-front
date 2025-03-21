@@ -28,9 +28,9 @@ function populateTable(data) {
                   <button class="edit-btn" onclick="deleteTask(${
                     task.id
                   })">Delete</button>
-                  <button class="edit-btn" onclick='showModal(
-                    "edit"
-                  )'>Edit</button>
+                  <button class="edit-btn" onclick="showEditModal(
+                    'edit', ${task.id}, '${task.nome}', '${task.descricao}', '${task.status}'
+                    )">Edit</button>
                 </td>
             `;
     tableBody.appendChild(row);
@@ -57,13 +57,9 @@ const postTask = async (inputName, inputDescription) => {
       } else {
         getList();
         countTaskStatus();
-        closeModal();
       }
     })
-    .catch((error) => {
-      console.error("Error adding task:", error);
-      alert("Error adding task: " + error.message);
-    });
+    .finally(() => closeModal("register"))
 };
 
 const deleteTask = async (taskId) => {
@@ -88,6 +84,30 @@ const deleteTask = async (taskId) => {
     .catch((error) => {
       console.error("Error:", error);
     });
+};
+
+const putTask = async (taskId, taskStatus) => {
+  let url = "http://192.168.0.109:5000/tarefa";
+
+  const formData = new FormData();
+
+  formData.append("id", taskId);
+  formData.append("status", taskStatus);
+
+  fetch(url, {
+    method: "put",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data && data.msg) {
+        alert("Error: " + data.msg);
+      } else {
+        getList();
+        countTaskStatus();
+        //closeModal("edit");
+      }
+    })
 };
 
 const countTaskStatus = async () => {
@@ -116,21 +136,10 @@ const addNewTask = () => {
 
 const updateTask = () => {
   let inputId = document.getElementById("input-edit-id").value;
-  let inputName = document.getElementById("input-edit-name").value;
-  let inputDescription = document.getElementById("input-edit-description").value;
   let inputStatus = document.getElementById("input-edit-status").value;
 
-  
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  const createButton = document.getElementById("create-button");
-
-  createButton.addEventListener("click", function (event) {
-    event.preventDefault();
-    addNewTask();
-  });
-});
+  putTask(inputId, inputStatus);
+};
 
 function showModal(modalName) {
   const modal = document.getElementById(`task-${modalName}-modal`);
@@ -144,12 +153,13 @@ function showModal(modalName) {
 function showEditModal(modalName, id, name, description, status) {
   const modal = document.getElementById(`task-${modalName}-modal`);
 
+  console.log(id);
   if (modal) {
     modal.style.display = "block";
-    document.getElementById(`input-edit-name`).value = name;
-    document.getElementById(`input-edit-description`).value = description;
-    document.getElementById(`input-edit-status`).value = status;
-    document.getElementById(`input-edit-id`).value = id;
+    document.getElementById("input-edit-id").value = id;
+    document.getElementById("input-edit-name").value = name;
+    document.getElementById("input-edit-description").value = description;
+    document.getElementById("input-edit-status").value = status;
   } else {
     console.error("Modal not found!");
   }
