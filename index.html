@@ -8,7 +8,8 @@
   </head>
   <body>
     <header>
-      <div class="circle"></div>
+      <button id="logout-button" onclick="showModal('user-login')">Login</button>
+      <button id="logout-button" onclick="logoutUser()">Logout</button>
     </header>
     <main>
       <section class="info-box">
@@ -46,7 +47,7 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody id="task-table">
+          <tbody id="task-table-body">
             <!-- Will be populated with request data -->
           </tbody>
         </table>
@@ -56,78 +57,131 @@
       <p class="footer-text">Task Manager - 2025</p>
     </footer>
 
-    <div id="task-register-modal" class="modal">
-      <div class="modal-content">
-        <button
-          class="close-button"
-          id="close-register"
-          onclick='closeModal("register")'
-        >
-          &times;
-        </button>
-        <h2>Create New Task</h2>
-        <form id="register-form" onsubmit="addNewTask()">
-          <label for="task-name">Task Name:</label>
-          <input type="text" id="input-name" name="task-name" required />
+    <!-- Modal do registro de tarefas -->
+    <dialog id="register-modal" class="modal-content">
+      <button
+        class="close-button"
+        id="close-register"
+        onclick='closeModal("register")'
+      >
+        &times;
+      </button>
+      <h2>Create New Task</h2>
+      <form id="register-form" onsubmit="addNewTask(event)">
+        <label for="task-name">Task Name:</label>
+        <input type="text" id="input-name" name="task-name" required />
 
-          <label for="task-description">Description:</label>
-          <input id="input-description" name="task-description" required />
+        <label for="task-description">Description:</label>
+        <input id="input-description" name="task-description" required />
 
-          <button type="submit" id="create-button">Create Task</button>
-        </form>
-      </div>
-    </div>
+        <button type="submit" id="create-button">Create Task</button>
+      </form>
+    </dialog>
 
-    <div id="task-edit-modal" class="modal">
-      <div class="modal-content">
-        <button
-          class="close-button"
-          id="close-register"
-          onclick='closeModal("edit")'
-        >
-          &times;
-        </button>
-        <h2>Edit Task</h2>
-        <form id="edit-form" onsubmit="updateTask(event)">
-          <label for="task-id">Task Id:</label>
-          <input
-            type="text"
-            id="input-edit-id"
-            name="task-id"
-            disabled
-            required
-          />
-        
-          <label for="task-name">Task Name:</label>
-          <input
-            type="text"
-            id="input-edit-name"
-            name="task-name"
-            disabled
-            required
-          />
-        
-          <label for="task-description">Description:</label>
-          <input
-            id="input-edit-description"
-            name="task-description"
-            disabled
-            required
-          />
-        
-          <label for="task-description">Status:</label>
-          <select id="input-edit-status" name="task-edit-status" required>
-            <option value="Ready">Ready</option>
-            <option value="Doing">Doing</option>
-            <option value="Done">Done</option>
-          </select>
-        
-          <button type="submit" id="create-button">
-            Edit Task
-          </button>
-        </form>
-      </div>
-    </div>
+    <!-- Modal da edição -->
+    <dialog id="edit-modal" class="modal-content">
+      <button
+        class="close-button"
+        id="close-register"
+        onclick='closeModal("edit")'
+      >
+        &times;
+      </button>
+      <h2>Edit Task</h2>
+      <form id="edit-form" onsubmit="updateTask(event)">
+        <label for="task-id">Task Id:</label>
+        <input
+          type="text"
+          id="input-edit-id"
+          name="task-id"
+          disabled
+          required
+        />
+
+        <label for="task-name">Task Name:</label>
+        <input
+          type="text"
+          id="input-edit-name"
+          name="task-name"
+          disabled
+          required
+        />
+
+        <label for="task-description">Description:</label>
+        <input
+          id="input-edit-description"
+          name="task-description"
+          disabled
+          required
+        />
+
+        <label for="task-description">Status:</label>
+        <select id="input-edit-status" name="task-edit-status" required>
+          <option value="Ready">Ready</option>
+          <option value="Doing">Doing</option>
+          <option value="Done">Done</option>
+        </select>
+
+        <button type="submit" id="create-button">Edit Task</button>
+      </form>
+    </dialog>
+
+    <!-- Modal de Login -->
+    <dialog id="user-login-modal" class="modal-content">
+      <button
+        class="close-button"
+        id="close-register"
+        onclick='closeModal("user-login")'
+      >
+        &times;
+      </button>
+      <h2>User Login</h2>
+      <form id="login-form" onsubmit="loginUser(event)">
+        <label for="email">Email:</label>
+        <input type="text" id="input-login-email" name="email" required />
+
+        <label for="password">Password:</label>
+        <input type="password" id="input-login-password" name="password" required />
+
+        <button type="submit">Login</button>
+      </form>
+      <!-- Link para abrir o modal de registro -->
+      <p>
+        Don't have an account?
+        <a href="#" onclick="showModal('user-register')">Register</a>
+      </p>
+    </dialog>
+
+    <!-- Modal de Register -->
+    <dialog id="user-register-modal" class="modal-content">
+      <button
+        class="close-button"
+        id="close-register"
+        onclick='closeModal("user-register")'
+      >
+        &times;
+      </button>
+      <h2>User Register</h2>
+      <form id="register-form" onsubmit="registerUser(event)">
+        <label for="register-username">Username:</label>
+        <input type="text" id="input-register-username" name="username" required />
+
+        <label for="register-email">Email:</label>
+        <input type="text" id="input-register-email" name="email" required />
+
+        <label for="register-password">Password:</label>
+        <input
+          type="password"
+          id="input-register-password"
+          name="password"
+          required
+        />
+
+        <button type="submit">Register</button>
+      </form>
+    </dialog>
+
+    <div id="notification-container"></div>
 
     <script src="script.js"></script>
   </body>

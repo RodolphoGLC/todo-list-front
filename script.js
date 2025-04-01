@@ -5,7 +5,7 @@ const getList = async () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      populateTable(data.tarefas.Tarefas);
+      populateTable(data.list.tarefas);
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -13,12 +13,13 @@ const getList = async () => {
 };
 
 function populateTable(data) {
-  const tableBody = document.querySelector("#task-table");
+  const tableBody = document.querySelector("#task-table-body");
 
   tableBody.innerHTML = "";
 
   data.forEach((task) => {
     const row = document.createElement("tr");
+
     row.innerHTML = `
                 <td>${task.nome}</td>
                 <td>${task.descricao}</td>
@@ -52,8 +53,8 @@ const postTask = async (inputName, inputDescription) => {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data && data.msg) {
-        alert("Error: " + data.msg);
+      if (data && data.message) {
+        alert("Error: " + data.message);
       } else {
         getList();
         countTaskStatus();
@@ -74,8 +75,8 @@ const deleteTask = async (taskId) => {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data && data.msg) {
-        alert("Error: " + data.msg);
+      if (data && data.error) {
+        alert("Error: " + data.error);
       } else {
         getList();
         countTaskStatus();
@@ -83,7 +84,7 @@ const deleteTask = async (taskId) => {
     })
     .catch((error) => {
       console.error("Error:", error);
-    });
+    })
 };
 
 const putTask = async (taskId, taskStatus) => {
@@ -100,15 +101,63 @@ const putTask = async (taskId, taskStatus) => {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data && data.msg) {
-        alert("Error: " + data.msg);
+      if (data && data.message) {
+        alert("Error: " + data.message);
       } else {
         getList();
         countTaskStatus();
-        //closeModal("edit");
+        closeModal("edit");
       }
     })
 };
+
+const postUser = async (name, email, password) => {
+  let url = "http://192.168.0.109:5000/usuario"
+
+  const formData = new FormData();
+
+  formData.append('nome', name);
+  formData.append('email', email);
+  formData.append('senha', password);
+
+  fetch(url, {
+    method: 'POST',
+    body: formData
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    if (data && data.message) {
+      alert("Error:" + data.message)
+    } else {
+      alert("Create User")
+    }
+  })
+  .finally(() => closeModal("user-register"))
+}
+
+const postUserLogin = async (email, password) => {
+  let url = "http://192.168.0.109:5000/usuario/login"
+
+  const formData = new FormData();
+
+  formData.append('email', email);
+  formData.append('senha', password);
+
+  fetch(url, {
+    method: 'POST',
+    body: formData
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    if (data && data.message) {
+      alert("Error:" + data.message)
+    } else {
+      alert("User is Logged")
+      localStorage.setItem('user', JSON.stringify(data.user));
+    }
+  })
+  .finally(() => closeModal("user-login"))
+}
 
 const countTaskStatus = async () => {
   let url = "http://192.168.0.109:5000/tarefas/status";
@@ -126,7 +175,8 @@ const countTaskStatus = async () => {
     });
 };
 
-const addNewTask = () => {
+const addNewTask = (event) => {
+  event.preventDefault();
   let inputName = document.getElementById("input-name").value;
 
   let inputDescription = document.getElementById("input-description").value;
@@ -134,15 +184,40 @@ const addNewTask = () => {
   postTask(inputName, inputDescription);
 };
 
-const updateTask = () => {
+const updateTask = (event) => {
+  event.preventDefault();
+
   let inputId = document.getElementById("input-edit-id").value;
   let inputStatus = document.getElementById("input-edit-status").value;
 
   putTask(inputId, inputStatus);
 };
 
+const registerUser = (event) => {
+  event.preventDefault();
+
+  let inputName = document.getElementById("input-register-username").value;
+  let inputEmail = document.getElementById("input-register-email").value;
+  let inputPassword = document.getElementById("input-register-password").value;
+
+  postUser(inputName, inputEmail, inputPassword);
+}
+
+const loginUser = (event) => {
+  event.preventDefault(event);
+
+  let inputEmail = document.getElementById("input-login-email").value;
+  let inputPassword = document.getElementById("input-login-password").value;
+
+  postUserLogin(inputEmail, inputPassword);
+}
+
+const logoutUser = () => {
+  localStorage.setItem('user', undefined);
+}
+
 function showModal(modalName) {
-  const modal = document.getElementById(`task-${modalName}-modal`);
+  const modal = document.getElementById(`${modalName}-modal`);
   if (modal) {
     modal.style.display = "block";
   } else {
@@ -151,9 +226,10 @@ function showModal(modalName) {
 }
 
 function showEditModal(modalName, id, name, description, status) {
-  const modal = document.getElementById(`task-${modalName}-modal`);
+  event.preventDefault();
 
-  console.log(id);
+  const modal = document.getElementById(`${modalName}-modal`);
+
   if (modal) {
     modal.style.display = "block";
     document.getElementById("input-edit-id").value = id;
@@ -166,11 +242,11 @@ function showEditModal(modalName, id, name, description, status) {
 }
 
 function closeModal(modalName) {
-  const modal = document.getElementById(`task-${modalName}-modal`);
+  const modal = document.getElementById(`${modalName}-modal`);
   if (modal) {
     modal.style.display = "none";
   }
 }
 
-countTaskStatus();
 getList();
+countTaskStatus();

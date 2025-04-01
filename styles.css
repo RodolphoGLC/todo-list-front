@@ -4,6 +4,7 @@ body {
   padding: 0;
   text-align: center;
   background-color: #f4f4f4;
+  width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -54,7 +55,7 @@ main {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 200px;
+  width: 140px;
   height: 80px;
   display: flex;
   align-items: center;
@@ -82,7 +83,7 @@ main {
 
 .button-task {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #949494;
   color: white;
   border: none;
   border-radius: 5px;
@@ -91,19 +92,17 @@ main {
 }
 
 .button-task:hover {
-  background-color: #0056b3;
+  background-color: #797272;
 }
 
 .table-container {
   max-height: calc(100% - 120px - 55px - 32px - 32px);;
   overflow-y: auto;
   width: 100%;
-  border: 1px solid #ddd;
 }
 
 table {
   width: 100%;
-  margin: 20px 0;
   border-collapse: collapse;
   background: white;
   border-radius: 10px;
@@ -120,6 +119,7 @@ td {
 th {
   background-color: #333;
   color: white;
+  width: calc(100% / 5);
 }
 
 .edit-btn {
@@ -128,27 +128,11 @@ th {
   cursor: pointer;
 }
 
-.modal {
-  display: none; 
-  position: fixed; 
-  width: 100vw; 
-  height: 100vh;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); 
-  
-  background-color: rgba(0, 0, 0, 0.5); 
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
 .modal-content {
-  position: relative; 
   background-color: white;
   padding: 20px;
   border-radius: 10px;
-  width: 90%;
+  width: 100%;
   max-width: 400px; 
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); 
   text-align: center;
@@ -173,15 +157,24 @@ th {
 }
 
 .modal-content input,
-.modal-content select,
-.modal-content textarea {
+.modal-content select {
     width: 90%;
-    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.modal-content input {
+  width: 97%;
+}
+
+.modal-content select {
+  width: 100%;
 }
 
 .modal-content button {
+    margin: 15px 0 20px 0;
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
@@ -192,4 +185,59 @@ th {
 
 .modal-content button:hover {
     background-color: #45a049;
+}
+
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+}
+
+.edit-btn i, .delete-btn i {
+  font-size: 18px;
+}
+
+.edit-btn:hover {
+  transform: scale(1.2);
+  color: #52d67a;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
+  color: #d9534f;
+}
+
+/* Css da notificação */
+
+#notification-container {
+  position: fixed;
+  top: 120px;
+  right: 120px;
+  width: 300px;
+  z-index: 1000;
+}
+
+.notification {
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.notification.success {
+  background-color: #4caf50;
+}
+
+.notification.error {
+  background-color: #f44336;
+}
+
+.notification.info {
+  background-color: #2196f3;
 }
