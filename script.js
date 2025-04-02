@@ -41,9 +41,14 @@ function populateTable(data) {
 const postTask = async (inputName, inputDescription) => {
   const formData = new FormData();
 
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  console.log(user)
+
   formData.append("nome", inputName);
   formData.append("descricao", inputDescription);
   formData.append("status", "Ready");
+  formData.append("emailUsuario", user.email)
 
   let url = "http://192.168.0.109:5000/tarefa";
 
