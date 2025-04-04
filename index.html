@@ -6,12 +6,18 @@
     <title>Task Manager</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
+
   <body>
+    <!-- Header -->
     <header>
-      <button id="logout-button" onclick="showModal('user-login')">Login</button>
-      <button id="logout-button" onclick="logoutUser()">Logout</button>
+      <div id="user-circle" class="user-circle">?</div>
+      <button onclick="showModal('user-login')" id="login-button">Login</button>
+      <button onclick="logoutUser()" id="logout-button">Logout</button>
     </header>
+
+    <!-- Main Content -->
     <main>
+      <!-- Status Count Boxes -->
       <section class="info-box">
         <div class="rectangle">
           <h2 id="readyCount">0</h2>
@@ -26,16 +32,15 @@
           <p>Done</p>
         </div>
       </section>
+
+      <!-- Create Task Button -->
       <section class="task-complement">
-        <button class="button-task">Filter Tasks</button>
-        <button
-          class="button-task"
-          id="open-register"
-          onclick='showModal("register")'
-        >
+        <button class="button-task" id="open-register" onclick='showModal("register")'>
           Create Task
         </button>
       </section>
+
+      <!-- Task Table -->
       <div class="table-container">
         <table>
           <thead>
@@ -48,24 +53,22 @@
             </tr>
           </thead>
           <tbody id="task-table-body">
-            <!-- Will be populated with request data -->
+            <!-- Populated dynamically -->
           </tbody>
         </table>
       </div>
     </main>
+
+    <!-- Footer -->
     <footer>
       <p class="footer-text">Task Manager - 2025</p>
     </footer>
 
-    <!-- Modal do registro de tarefas -->
+    <!-- Modals -->
+
+    <!-- Task Register Modal -->
     <dialog id="register-modal" class="modal-content">
-      <button
-        class="close-button"
-        id="close-register"
-        onclick='closeModal("register")'
-      >
-        &times;
-      </button>
+      <button class="close-button" onclick='closeModal("register")'>&times;</button>
       <h2>Create New Task</h2>
       <form id="register-form" onsubmit="addNewTask(event)">
         <label for="task-name">Task Name:</label>
@@ -78,42 +81,19 @@
       </form>
     </dialog>
 
-    <!-- Modal da edição -->
+    <!-- Task Edit Modal -->
     <dialog id="edit-modal" class="modal-content">
-      <button
-        class="close-button"
-        id="close-register"
-        onclick='closeModal("edit")'
-      >
-        &times;
-      </button>
+      <button class="close-button" onclick='closeModal("edit")'>&times;</button>
       <h2>Edit Task</h2>
       <form id="edit-form" onsubmit="updateTask(event)">
         <label for="task-id">Task Id:</label>
-        <input
-          type="text"
-          id="input-edit-id"
-          name="task-id"
-          disabled
-          required
-        />
+        <input type="text" id="input-edit-id" name="task-id" disabled required />
 
         <label for="task-name">Task Name:</label>
-        <input
-          type="text"
-          id="input-edit-name"
-          name="task-name"
-          disabled
-          required
-        />
+        <input type="text" id="input-edit-name" name="task-name" disabled required />
 
         <label for="task-description">Description:</label>
-        <input
-          id="input-edit-description"
-          name="task-description"
-          disabled
-          required
-        />
+        <input id="input-edit-description" name="task-description" disabled required />
 
         <label for="task-description">Status:</label>
         <select id="input-edit-status" name="task-edit-status" required>
@@ -126,15 +106,9 @@
       </form>
     </dialog>
 
-    <!-- Modal de Login -->
+    <!-- User Login Modal -->
     <dialog id="user-login-modal" class="modal-content">
-      <button
-        class="close-button"
-        id="close-register"
-        onclick='closeModal("user-login")'
-      >
-        &times;
-      </button>
+      <button class="close-button" onclick='closeModal("user-login")'>&times;</button>
       <h2>User Login</h2>
       <form id="login-form" onsubmit="loginUser(event)">
         <label for="email">Email:</label>
@@ -145,22 +119,15 @@
 
         <button type="submit">Login</button>
       </form>
-      <!-- Link para abrir o modal de registro -->
       <p>
         Don't have an account?
         <a href="#" onclick="showModal('user-register')">Register</a>
       </p>
     </dialog>
 
-    <!-- Modal de Register -->
+    <!-- User Register Modal -->
     <dialog id="user-register-modal" class="modal-content">
-      <button
-        class="close-button"
-        id="close-register"
-        onclick='closeModal("user-register")'
-      >
-        &times;
-      </button>
+      <button class="close-button" onclick='closeModal("user-register")'>&times;</button>
       <h2>User Register</h2>
       <form id="register-form" onsubmit="registerUser(event)">
         <label for="register-username">Username:</label>
@@ -170,19 +137,16 @@
         <input type="text" id="input-register-email" name="email" required />
 
         <label for="register-password">Password:</label>
-        <input
-          type="password"
-          id="input-register-password"
-          name="password"
-          required
-        />
+        <input type="password" id="input-register-password" name="password" required />
 
         <button type="submit">Register</button>
       </form>
     </dialog>
 
+    <!-- Notifications -->
     <div id="notification-container"></div>
 
+    <!-- JS -->
     <script src="script.js"></script>
   </body>
 </html>

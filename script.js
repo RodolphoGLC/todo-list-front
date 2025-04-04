@@ -1,257 +1,247 @@
+// ===========================
+// Initialization
+// ===========================
+getList();
+countTaskStatus();
+
+// ===========================
+// Tasks - CRUD Operations
+// ===========================
+
 const getList = async () => {
-  let url = "http://192.168.0.109:5000/tarefas";
-  fetch(url, {
-    method: "get",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      populateTable(data.list.tarefas);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+  const user = JSON.parse(localStorage.getItem('user'));
+  document.getElementById('user-circle').textContent = user.nome.slice(0, 2).toUpperCase();
+
+  const url = `http://192.168.0.109:5000/tarefas?id=${user.id}`;
+  fetch(url)
+    .then(res => res.json())
+    .then(data => populateTable(data.list.tarefas))
+    .catch(err => console.error("Error:", err));
 };
 
-function populateTable(data) {
-  const tableBody = document.querySelector("#task-table-body");
-
-  tableBody.innerHTML = "";
-
-  data.forEach((task) => {
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-                <td>${task.nome}</td>
-                <td>${task.descricao}</td>
-                <td>${task.status}</td>
-                <td>${"-"}</td>
-                <td>
-                  <button class="edit-btn" onclick="deleteTask(${
-                    task.id
-                  })">Delete</button>
-                  <button class="edit-btn" onclick="showEditModal(
-                    'edit', ${task.id}, '${task.nome}', '${task.descricao}', '${task.status}'
-                    )">Edit</button>
-                </td>
-            `;
-    tableBody.appendChild(row);
-  });
-}
-
 const postTask = async (inputName, inputDescription) => {
+  const user = JSON.parse(localStorage.getItem("user"));
   const formData = new FormData();
-
-  const user = JSON.parse(localStorage.getItem('user'))
-
-  console.log(user)
 
   formData.append("nome", inputName);
   formData.append("descricao", inputDescription);
   formData.append("status", "Ready");
-  formData.append("emailUsuario", user.email)
+  formData.append("emailUsuario", user.email);
 
-  let url = "http://192.168.0.109:5000/tarefa";
+  const url = "http://192.168.0.109:5000/tarefa";
 
   fetch(url, {
     method: "POST",
     body: formData,
   })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data && data.message) {
+    .then(res => res.json())
+    .then(data => {
+      if (data?.message) {
         alert("Error: " + data.message);
       } else {
         getList();
         countTaskStatus();
       }
     })
-    .finally(() => closeModal("register"))
+    .finally(() => closeModal("register"));
 };
 
 const deleteTask = async (taskId) => {
-  const formData = new FormData();
-
-  formData.append("id", taskId);
-
-  let url = `http://192.168.0.109:5000/tarefa?id=${taskId}`;
+  const url = `http://192.168.0.109:5000/tarefa?id=${taskId}`;
 
   fetch(url, {
-    method: "delete",
+    method: "DELETE",
   })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data && data.error) {
+    .then(res => res.json())
+    .then(data => {
+      if (data?.error) {
         alert("Error: " + data.error);
       } else {
         getList();
         countTaskStatus();
       }
     })
-    .catch((error) => {
-      console.error("Error:", error);
-    })
+    .catch(err => console.error("Error:", err));
 };
 
 const putTask = async (taskId, taskStatus) => {
-  let url = "http://192.168.0.109:5000/tarefa";
-
   const formData = new FormData();
-
   formData.append("id", taskId);
   formData.append("status", taskStatus);
 
+  const url = "http://192.168.0.109:5000/tarefa";
+
   fetch(url, {
-    method: "put",
+    method: "PUT",
     body: formData,
   })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data && data.message) {
+    .then(res => res.json())
+    .then(data => {
+      if (data?.message) {
         alert("Error: " + data.message);
       } else {
         getList();
         countTaskStatus();
         closeModal("edit");
       }
-    })
+    });
 };
 
-const postUser = async (name, email, password) => {
-  let url = "http://192.168.0.109:5000/usuario"
+// ===========================
+// Tasks - Helper Functions
+// ===========================
 
-  const formData = new FormData();
+const populateTable = (tasks) => {
+  const tableBody = document.querySelector("#task-table-body");
+  tableBody.innerHTML = "";
 
-  formData.append('nome', name);
-  formData.append('email', email);
-  formData.append('senha', password);
-
-  fetch(url, {
-    method: 'POST',
-    body: formData
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    if (data && data.message) {
-      alert("Error:" + data.message)
-    } else {
-      alert("Create User")
-    }
-  })
-  .finally(() => closeModal("user-register"))
-}
-
-const postUserLogin = async (email, password) => {
-  let url = "http://192.168.0.109:5000/usuario/login"
-
-  const formData = new FormData();
-
-  formData.append('email', email);
-  formData.append('senha', password);
-
-  fetch(url, {
-    method: 'POST',
-    body: formData
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    if (data && data.message) {
-      alert("Error:" + data.message)
-    } else {
-      alert("User is Logged")
-      localStorage.setItem('user', JSON.stringify(data.user));
-    }
-  })
-  .finally(() => closeModal("user-login"))
-}
+  tasks.forEach(task => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${task.nome}</td>
+      <td>${task.descricao}</td>
+      <td>${task.status}</td>
+      <td>-</td>
+      <td>
+        <button class="edit-btn" onclick="deleteTask(${task.id})">Delete</button>
+        <button class="edit-btn" onclick="showEditModal('edit', ${task.id}, '${task.nome}', '${task.descricao}', '${task.status}')">Edit</button>
+      </td>`;
+    tableBody.appendChild(row);
+  });
+};
 
 const countTaskStatus = async () => {
-  let url = "http://192.168.0.109:5000/tarefas/status";
-  fetch(url, {
-    method: "get",
-  })
-    .then((response) => response.json())
-    .then((data) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const url = `http://192.168.0.109:5000/tarefas/status?id=${user.id}`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
       document.getElementById("readyCount").innerText = data.Ready || 0;
       document.getElementById("doingCount").innerText = data.Doing || 0;
       document.getElementById("doneCount").innerText = data.Done || 0;
     })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+    .catch(err => console.error("Error:", err));
 };
+
+// ===========================
+// Authentication - Register & Login
+// ===========================
+
+const postUser = async (name, email, password) => {
+  const formData = new FormData();
+  formData.append("nome", name);
+  formData.append("email", email);
+  formData.append("senha", password);
+
+  const url = "http://192.168.0.109:5000/usuario";
+
+  fetch(url, {
+    method: "POST",
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data?.message) {
+        alert("Error: " + data.message);
+      } else {
+        alert("User Created");
+      }
+    })
+    .finally(() => closeModal("user-register"));
+};
+
+const postUserLogin = async (email, password) => {
+  const formData = new FormData();
+  formData.append("email", email);
+  formData.append("senha", password);
+
+  const url = "http://192.168.0.109:5000/usuario/login";
+
+  fetch(url, {
+    method: "POST",
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data?.message) {
+        alert("Error: " + data.message);
+      } else {
+        alert("User Logged In");
+        localStorage.setItem("user", JSON.stringify(data.user));
+        getList();
+        countTaskStatus();
+      }
+    })
+    .finally(() => closeModal("user-login"));
+};
+
+const logoutUser = () => {
+  localStorage.removeItem("user");
+
+  document.getElementById("readyCount").innerText = 0;
+  document.getElementById("doingCount").innerText = 0;
+  document.getElementById("doneCount").innerText = 0;
+  document.querySelector("#task-table-body").innerHTML = "";
+  document.getElementById('user-circle').textContent = "?";
+};
+
+// ===========================
+// Form Input Handlers
+// ===========================
 
 const addNewTask = (event) => {
   event.preventDefault();
-  let inputName = document.getElementById("input-name").value;
-
-  let inputDescription = document.getElementById("input-description").value;
-
-  postTask(inputName, inputDescription);
+  const name = document.getElementById("input-name").value;
+  const desc = document.getElementById("input-description").value;
+  postTask(name, desc);
 };
 
 const updateTask = (event) => {
   event.preventDefault();
-
-  let inputId = document.getElementById("input-edit-id").value;
-  let inputStatus = document.getElementById("input-edit-status").value;
-
-  putTask(inputId, inputStatus);
+  const id = document.getElementById("input-edit-id").value;
+  const status = document.getElementById("input-edit-status").value;
+  putTask(id, status);
 };
 
 const registerUser = (event) => {
   event.preventDefault();
-
-  let inputName = document.getElementById("input-register-username").value;
-  let inputEmail = document.getElementById("input-register-email").value;
-  let inputPassword = document.getElementById("input-register-password").value;
-
-  postUser(inputName, inputEmail, inputPassword);
-}
+  const name = document.getElementById("input-register-username").value;
+  const email = document.getElementById("input-register-email").value;
+  const password = document.getElementById("input-register-password").value;
+  postUser(name, email, password);
+};
 
 const loginUser = (event) => {
-  event.preventDefault(event);
+  event.preventDefault();
+  const email = document.getElementById("input-login-email").value;
+  const password = document.getElementById("input-login-password").value;
+  postUserLogin(email, password);
+};
 
-  let inputEmail = document.getElementById("input-login-email").value;
-  let inputPassword = document.getElementById("input-login-password").value;
-
-  postUserLogin(inputEmail, inputPassword);
-}
-
-const logoutUser = () => {
-  localStorage.setItem('user', undefined);
-}
+// ===========================
+// Modal Handlers
+// ===========================
 
 function showModal(modalName) {
   const modal = document.getElementById(`${modalName}-modal`);
-  if (modal) {
-    modal.style.display = "block";
-  } else {
-    console.error("Modal not found!");
-  }
-}
-
-function showEditModal(modalName, id, name, description, status) {
-  event.preventDefault();
-
-  const modal = document.getElementById(`${modalName}-modal`);
-
-  if (modal) {
-    modal.style.display = "block";
-    document.getElementById("input-edit-id").value = id;
-    document.getElementById("input-edit-name").value = name;
-    document.getElementById("input-edit-description").value = description;
-    document.getElementById("input-edit-status").value = status;
-  } else {
-    console.error("Modal not found!");
-  }
+  if (modal) modal.style.display = "block";
+  else console.error("Modal not found!");
 }
 
 function closeModal(modalName) {
   const modal = document.getElementById(`${modalName}-modal`);
-  if (modal) {
-    modal.style.display = "none";
-  }
+  if (modal) modal.style.display = "none";
 }
 
-getList();
-countTaskStatus();
+function showEditModal(modalName, id, name, description, status) {
+  event.preventDefault();
+  const modal = document.getElementById(`${modalName}-modal`);
+  if (!modal) return console.error("Modal not found!");
+
+  modal.style.display = "block";
+  document.getElementById("input-edit-id").value = id;
+  document.getElementById("input-edit-name").value = name;
+  document.getElementById("input-edit-description").value = description;
+  document.getElementById("input-edit-status").value = status;
+}
