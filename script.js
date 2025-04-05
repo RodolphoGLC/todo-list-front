@@ -1,22 +1,18 @@
 // ===========================
-// Initialization
-// ===========================
-getList();
-countTaskStatus();
-
-// ===========================
 // Tasks - CRUD Operations
 // ===========================
 
 const getList = async () => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  document.getElementById('user-circle').textContent = user.nome.slice(0, 2).toUpperCase();
+  const user = JSON.parse(localStorage.getItem("user"));
+  document.getElementById("user-circle").textContent = user.nome
+    .slice(0, 2)
+    .toUpperCase();
 
   const url = `http://192.168.0.109:5000/tarefas?id=${user.id}`;
   fetch(url)
-    .then(res => res.json())
-    .then(data => populateTable(data.list.tarefas))
-    .catch(err => console.error("Error:", err));
+    .then((res) => res.json())
+    .then((data) => populateTable(data.list.tarefas))
+    .catch((err) => console.error("Error:", err));
 };
 
 const postTask = async (inputName, inputDescription) => {
@@ -34,8 +30,8 @@ const postTask = async (inputName, inputDescription) => {
     method: "POST",
     body: formData,
   })
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       if (data?.message) {
         alert("Error: " + data.message);
       } else {
@@ -52,8 +48,8 @@ const deleteTask = async (taskId) => {
   fetch(url, {
     method: "DELETE",
   })
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       if (data?.error) {
         alert("Error: " + data.error);
       } else {
@@ -61,7 +57,7 @@ const deleteTask = async (taskId) => {
         countTaskStatus();
       }
     })
-    .catch(err => console.error("Error:", err));
+    .catch((err) => console.error("Error:", err));
 };
 
 const putTask = async (taskId, taskStatus) => {
@@ -75,8 +71,8 @@ const putTask = async (taskId, taskStatus) => {
     method: "PUT",
     body: formData,
   })
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       if (data?.message) {
         alert("Error: " + data.message);
       } else {
@@ -91,19 +87,31 @@ const putTask = async (taskId, taskStatus) => {
 // Tasks - Helper Functions
 // ===========================
 
+const truncate = (text, maxLength = 30) => {
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+};
+
+const formatDate = (isoDate) => {
+  const date = new Date(isoDate);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day   = String(date.getDate()).padStart(2, '0');
+  const year  = date.getFullYear();
+  return `${month}/${day}/${year}`;
+};
+
 const populateTable = (tasks) => {
   const tableBody = document.querySelector("#task-table-body");
   tableBody.innerHTML = "";
 
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${task.nome}</td>
-      <td>${task.descricao}</td>
+      <td>${truncate(task.nome)}</td>
+      <td>${truncate(task.descricao)}</td>
       <td>${task.status}</td>
-      <td>-</td>
+      <td>${formatDate(task.data_criacao)}</td>
       <td>
-        <button class="edit-btn" onclick="deleteTask(${task.id})">Delete</button>
+        <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
         <button class="edit-btn" onclick="showEditModal('edit', ${task.id}, '${task.nome}', '${task.descricao}', '${task.status}')">Edit</button>
       </td>`;
     tableBody.appendChild(row);
@@ -111,17 +119,17 @@ const populateTable = (tasks) => {
 };
 
 const countTaskStatus = async () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem("user"));
   const url = `http://192.168.0.109:5000/tarefas/status?id=${user.id}`;
 
   fetch(url)
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       document.getElementById("readyCount").innerText = data.Ready || 0;
       document.getElementById("doingCount").innerText = data.Doing || 0;
       document.getElementById("doneCount").innerText = data.Done || 0;
     })
-    .catch(err => console.error("Error:", err));
+    .catch((err) => console.error("Error:", err));
 };
 
 // ===========================
@@ -140,8 +148,8 @@ const postUser = async (name, email, password) => {
     method: "POST",
     body: formData,
   })
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       if (data?.message) {
         alert("Error: " + data.message);
       } else {
@@ -162,8 +170,8 @@ const postUserLogin = async (email, password) => {
     method: "POST",
     body: formData,
   })
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       if (data?.message) {
         alert("Error: " + data.message);
       } else {
@@ -183,7 +191,7 @@ const logoutUser = () => {
   document.getElementById("doingCount").innerText = 0;
   document.getElementById("doneCount").innerText = 0;
   document.querySelector("#task-table-body").innerHTML = "";
-  document.getElementById('user-circle').textContent = "?";
+  document.getElementById("user-circle").textContent = "?";
 };
 
 // ===========================
@@ -245,3 +253,9 @@ function showEditModal(modalName, id, name, description, status) {
   document.getElementById("input-edit-description").value = description;
   document.getElementById("input-edit-status").value = status;
 }
+
+// ===========================
+// Initialization
+// ===========================
+getList();
+countTaskStatus();
