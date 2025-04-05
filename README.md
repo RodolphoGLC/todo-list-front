@@ -25,7 +25,8 @@ Um sistema simples de gerenciamento de tarefas feito com **HTML**, **CSS** e **J
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/task-manager.git
+   git clone "https://github.com/RodolphoGLC/todo-list-front.git"
+   
 2. Abra o index no navegador
 
 OBS: para a obtenção dos dados precisará da API
