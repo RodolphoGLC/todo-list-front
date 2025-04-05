@@ -27,7 +27,7 @@ Um sistema simples de gerenciamento de tarefas feito com **HTML**, **CSS** e **J
    ```bash
    git clone "https://github.com/RodolphoGLC/todo-list-front.git"
    
-2. Abra o index no navegador
+2. Abra o index no navegador (vá pelo explorador de arquivos)
 
 OBS: para a obtenção dos dados precisará da API
 
