@@ -4,14 +4,16 @@
 
 const getList = async () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  document.getElementById("user-circle").textContent = user.nome
+  document.getElementById("user-circle").textContent = user.name
     .slice(0, 2)
     .toUpperCase();
 
-  const url = `http://192.168.0.109:5000/tarefas?id=${user.id}`;
+  const url = `http://192.168.0.109:5000/tasks?id=${user.id}`;
   fetch(url)
     .then((res) => res.json())
-    .then((data) => populateTable(data.list.tarefas))
+    .then((data) => {
+      populateTable(data.tasks)
+    })
     .catch((err) => console.error("Error:", err));
 };
 
@@ -19,12 +21,12 @@ const postTask = async (inputName, inputDescription) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const formData = new FormData();
 
-  formData.append("nome", inputName);
-  formData.append("descricao", inputDescription);
+  formData.append("name", inputName);
+  formData.append("description", inputDescription);
   formData.append("status", "Ready");
-  formData.append("emailUsuario", user.email);
+  formData.append("userEmail", user.email);
 
-  const url = "http://192.168.0.109:5000/tarefa";
+  const url = "http://192.168.0.109:5000/task";
 
   fetch(url, {
     method: "POST",
@@ -43,7 +45,7 @@ const postTask = async (inputName, inputDescription) => {
 };
 
 const deleteTask = async (taskId) => {
-  const url = `http://192.168.0.109:5000/tarefa?id=${taskId}`;
+  const url = `http://192.168.0.109:5000/task?id=${taskId}`;
 
   fetch(url, {
     method: "DELETE",
@@ -65,7 +67,7 @@ const putTask = async (taskId, taskStatus) => {
   formData.append("id", taskId);
   formData.append("status", taskStatus);
 
-  const url = "http://192.168.0.109:5000/tarefa";
+  const url = "http://192.168.0.109:5000/task";
 
   fetch(url, {
     method: "PUT",
@@ -81,6 +83,20 @@ const putTask = async (taskId, taskStatus) => {
         closeModal("edit");
       }
     });
+};
+
+const countTaskStatus = async () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const url = `http://192.168.0.109:5000/tasks/status?id=${user.id}`;
+
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => {
+      document.getElementById("readyCount").innerText = data.Ready || 0;
+      document.getElementById("doingCount").innerText = data.Doing || 0;
+      document.getElementById("doneCount").innerText = data.Done || 0;
+    })
+    .catch((err) => console.error("Error:", err));
 };
 
 // ===========================
@@ -106,30 +122,16 @@ const populateTable = (tasks) => {
   tasks.forEach((task) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${truncate(task.nome)}</td>
-      <td>${truncate(task.descricao)}</td>
+      <td>${truncate(task.name)}</td>
+      <td>${truncate(task.description)}</td>
       <td>${task.status}</td>
-      <td>${formatDate(task.data_criacao)}</td>
+      <td>${formatDate(task.creation_date)}</td>
       <td>
         <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
-        <button class="edit-btn" onclick="showEditModal('edit', ${task.id}, '${task.nome}', '${task.descricao}', '${task.status}')">Edit</button>
+        <button class="edit-btn" onclick="showEditModal('edit', ${task.id}, '${task.name}', '${task.description}', '${task.status}')">Edit</button>
       </td>`;
     tableBody.appendChild(row);
   });
-};
-
-const countTaskStatus = async () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const url = `http://192.168.0.109:5000/tarefas/status?id=${user.id}`;
-
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      document.getElementById("readyCount").innerText = data.Ready || 0;
-      document.getElementById("doingCount").innerText = data.Doing || 0;
-      document.getElementById("doneCount").innerText = data.Done || 0;
-    })
-    .catch((err) => console.error("Error:", err));
 };
 
 // ===========================
@@ -138,11 +140,11 @@ const countTaskStatus = async () => {
 
 const postUser = async (name, email, password) => {
   const formData = new FormData();
-  formData.append("nome", name);
+  formData.append("name", name);
   formData.append("email", email);
-  formData.append("senha", password);
+  formData.append("password", password);
 
-  const url = "http://192.168.0.109:5000/usuario";
+  const url = "http://192.168.0.109:5000/user";
 
   fetch(url, {
     method: "POST",
@@ -162,9 +164,9 @@ const postUser = async (name, email, password) => {
 const postUserLogin = async (email, password) => {
   const formData = new FormData();
   formData.append("email", email);
-  formData.append("senha", password);
+  formData.append("password", password);
 
-  const url = "http://192.168.0.109:5000/usuario/login";
+  const url = "http://192.168.0.109:5000/user/login";
 
   fetch(url, {
     method: "POST",
