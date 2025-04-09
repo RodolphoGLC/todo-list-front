@@ -8,7 +8,7 @@ const getList = async () => {
     .slice(0, 2)
     .toUpperCase();
 
-  const url = `http://192.168.0.109:5000/tasks?id=${user.id}`;
+  const url = `http://localhost:5000/tasks?id=${user.id}`;
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
@@ -26,7 +26,7 @@ const postTask = async (inputName, inputDescription) => {
   formData.append("status", "Ready");
   formData.append("userEmail", user.email);
 
-  const url = "http://192.168.0.109:5000/task";
+  const url = "http://localhost:5000/task";
 
   fetch(url, {
     method: "POST",
@@ -45,7 +45,7 @@ const postTask = async (inputName, inputDescription) => {
 };
 
 const deleteTask = async (taskId) => {
-  const url = `http://192.168.0.109:5000/task?id=${taskId}`;
+  const url = `http://localhost:5000/task?id=${taskId}`;
 
   fetch(url, {
     method: "DELETE",
@@ -67,7 +67,7 @@ const putTask = async (taskId, taskStatus) => {
   formData.append("id", taskId);
   formData.append("status", taskStatus);
 
-  const url = "http://192.168.0.109:5000/task";
+  const url = "http://localhost:5000/task";
 
   fetch(url, {
     method: "PUT",
@@ -87,7 +87,7 @@ const putTask = async (taskId, taskStatus) => {
 
 const countTaskStatus = async () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  const url = `http://192.168.0.109:5000/tasks/status?id=${user.id}`;
+  const url = `http://localhost:5000/tasks/status?id=${user.id}`;
 
   fetch(url)
     .then((res) => res.json())
@@ -144,7 +144,7 @@ const postUser = async (name, email, password) => {
   formData.append("email", email);
   formData.append("password", password);
 
-  const url = "http://192.168.0.109:5000/user";
+  const url = "http://localhost:5000/user";
 
   fetch(url, {
     method: "POST",
@@ -166,7 +166,7 @@ const postUserLogin = async (email, password) => {
   formData.append("email", email);
   formData.append("password", password);
 
-  const url = "http://192.168.0.109:5000/user/login";
+  const url = "http://localhost:5000/user/login";
 
   fetch(url, {
     method: "POST",
