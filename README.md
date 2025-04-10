@@ -12,7 +12,7 @@ Um sistema simples de gerenciamento de tarefas feito com **HTML**, **CSS** e **J
 - ✅ Formatação de datas (MM/DD/YYYY)
 - ✅ Texto truncado em campos longos
 - ✅ Feedback visual com notificações e modais
-- ✅ Design limpo e responsivo
+- ✅ Design limpo
 
 ## 💻 Tecnologias
 
